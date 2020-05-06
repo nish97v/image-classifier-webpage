@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul class="flash">
+<!--    For loop is used because flash messages come in lists-->
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+<p>Upload the image to classify!</p>
+
+<form action="/" method="post" enctype="multipart/form-data">
+    <input type="file" name="image" id="image">
+    <input type="submit" value="Submit">
+</form>
+
+{% endblock %}
