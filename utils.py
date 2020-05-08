@@ -1,6 +1,11 @@
-from numpy import pi
+import os
 from bokeh.plotting import figure
 from bokeh.embed import components
+
+
+def check_image_dir():
+    if not os.path.isdir(f'{os.getcwd()}/images'):
+        os.makedirs(f'{os.getcwd()}/images')
 
 
 def is_allowed_file(filename, allowed_ext):

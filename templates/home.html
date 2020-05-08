@@ -13,11 +13,12 @@
 {% endif %}
 {% endwith %}
 
-<p>Upload the image to classify!</p>
-
-<form action="/" method="post" enctype="multipart/form-data">
-    <input type="file" name="image" id="image">
-    <input type="submit" value="Submit">
-</form>
+<div class="col-md-7">
+    <h2>Upload your pet image!</h2>
+    <form action="/" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" id="image">
+        <input type="submit" value="Submit">
+    </form>
+</div>
 
 {% endblock %}

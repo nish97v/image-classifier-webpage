@@ -2,10 +2,12 @@
 
 {% block body %}
 
-<div class="centered">
+<div class="centered col-md-7">
 <!--    image url : {{ image_url }}-->
-    <p>Looks like it's a...</p>
+    <h2>Looks like it's a <strong>{{ prediction }}!</strong></h2>
+    <header> <strong>Input image :</strong> </header>
     <img src="{{image_url}}" alt="Input image">
+    <header> <strong>Prediction probabilities :</strong> </header>
     {{ plot_div|safe }}
 </div>
 

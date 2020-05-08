@@ -1,7 +1,9 @@
 import os
+import numpy as np
 from flask import Flask, flash, render_template, request, redirect, url_for, send_file
-from utils import is_allowed_file
+from utils import check_image_dir, is_allowed_file, generate_barplot
 from werkzeug.utils import secure_filename
+from test import load_and_preprocess, predict_probabilities
 
 production = False
 
@@ -39,19 +41,24 @@ def home():
                 passed = False
 
         if passed:
-            return redirect(url_for('predict', filename='test.png'))
+            return redirect(url_for('predict', filename=image_file.filename))
         else:
             # Need to do : Return the type of error
-            flash('An error occured, try again.')
+            flash('An error occurred, try again.')
             return redirect(request.url)
 
 
 # Angular bracket for filename is used to get filename as a parameter
 @app.route('/predict/<filename>', methods=['GET'])
 def predict(filename):
-    # Need to do : logic for loading the uploaded image file and predict the class
-
-    return render_template('predict.html')
+    image_url = url_for('images', filename=filename)
+    image_path = os.path.join(app.config['UPLOAD_FOLDER'], f'images/{filename}')
+    image = load_and_preprocess(image_path)
+    probabilities = predict_probabilities(image)
+    prediction = app.config['IMAGE_LABELS'][np.where(probabilities > 0.5)[0][0]]
+    script, div = generate_barplot(probabilities, app.config['IMAGE_LABELS'])
+    return render_template('predict.html', plot_script=script, plot_div=div, image_url=image_url,
+                           prediction=prediction)
 
 
 @app.errorhandler(500)
@@ -61,8 +68,9 @@ def server_error(error):
 
 @app.route('/images/<filename>', methods=['GET'])
 def images(filename):
-    return send_file(app.config['UPLOAD_FOLDER'], f'images/{filename}')
+    return send_file(os.path.join(app.config['UPLOAD_FOLDER'], f'images/{filename}'))
 
 
 if __name__ == "__main__":
+    check_image_dir()
     app.run('127.0.0.1')
